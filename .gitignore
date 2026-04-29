@@ -1,0 +1,7 @@
+
+*.gsheet
+*.gdoc
+*.gslides
+*.gdraw
+*.gtable
+__pycache__/
