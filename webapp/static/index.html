@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VinTelligence — Revenue Forecasting</title>
+  <meta name="description" content="AI-powered revenue forecasting dashboard using XGBoost & Random Forest models for VinTelligence Datathon 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ── HERO HEADER ───────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="badge">🏆 Datathon VinTelligence 2026</div>
+      <h1>Revenue <span class="gradient-text">Forecasting</span></h1>
+      <p class="hero-sub">
+        Dự đoán doanh thu và COGS sử dụng XGBoost &amp; Random Forest dựa trên
+        <strong>10 đặc trưng tương quan cao nhất</strong>.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-chip"><span class="stat-value" id="stat-r2">0.9955</span><span class="stat-label">R² Score</span></div>
+        <div class="stat-chip"><span class="stat-value">10</span><span class="stat-label">Top Features</span></div>
+        <div class="stat-chip"><span class="stat-value">2</span><span class="stat-label">Models</span></div>
+      </div>
+    </div>
+    <div class="hero-chart-decoration">
+      <svg viewBox="0 0 400 120" fill="none">
+        <polyline points="0,100 50,80 100,90 150,40 200,60 250,20 300,35 350,10 400,25"
+          stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+        <polyline points="0,110 50,95 100,105 150,55 200,75 250,35 300,50 350,25 400,40"
+          stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT ──────────────────────────────────────────────────────── -->
+  <main class="container">
+
+    <!-- Model & Target selector -->
+    <section class="card selector-card">
+      <h2 class="card-title">⚙️ Cấu hình Model</h2>
+      <div class="selector-row">
+        <div class="selector-group">
+          <label class="selector-label">Chọn Model</label>
+          <div class="pill-group" id="model-selector">
+            <button class="pill active" data-value="XGBoost" id="btn-xgb">XGBoost</button>
+            <button class="pill" data-value="RandomForest" id="btn-rf">Random Forest</button>
+          </div>
+        </div>
+        <div class="selector-group">
+          <label class="selector-label">Mục tiêu dự đoán</label>
+          <div class="pill-group" id="target-selector">
+            <button class="pill active" data-value="Revenue" id="btn-rev">Revenue</button>
+            <button class="pill" data-value="COGS" id="btn-cogs">COGS</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature inputs -->
+    <section class="card inputs-card">
+      <div class="card-header">
+        <h2 class="card-title">📊 Top 10 Features</h2>
+        <div class="card-subtitle">Nhập giá trị cho các đặc trưng tương quan cao nhất với Revenue</div>
+      </div>
+
+      <div class="features-grid" id="features-grid">
+        <!-- Dynamically populated -->
+      </div>
+
+      <div class="action-bar">
+        <button class="btn-reset" id="btn-reset">↺ Reset về mặc định</button>
+        <button class="btn-predict" id="btn-predict">
+          <span class="btn-text">🔮 Dự đoán ngay</span>
+          <span class="btn-loader" style="display:none;">⏳ Đang tính...</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Result card -->
+    <section class="card result-card" id="result-card" style="display:none;">
+      <div class="result-header">
+        <div class="result-icon">📈</div>
+        <div>
+          <h2 class="result-title">Kết quả Dự đoán</h2>
+          <div class="result-meta" id="result-meta">XGBoost · Revenue</div>
+        </div>
+      </div>
+
+      <div class="result-value-block">
+        <div class="result-label">Doanh thu dự đoán</div>
+        <div class="result-amount" id="result-amount">—</div>
+        <div class="result-unit">VND</div>
+      </div>
+
+      <div class="result-gauge-wrap">
+        <div class="gauge-label">Mức độ tự tin (R² = 0.9955)</div>
+        <div class="gauge-bar">
+          <div class="gauge-fill" id="gauge-fill" style="width: 0%"></div>
+        </div>
+        <div class="gauge-pct" id="gauge-pct">0%</div>
+      </div>
+
+      <div class="insight-chips" id="insight-chips"></div>
+    </section>
+
+    <!-- Correlation chart -->
+    <section class="card chart-card">
+      <h2 class="card-title">🔗 Hệ số Tương quan với Revenue</h2>
+      <div class="chart-wrap" id="corr-chart"></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>VinTelligence Revenue Forecasting · Datathon 2026 · Powered by XGBoost &amp; Random Forest</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

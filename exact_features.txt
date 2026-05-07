@@ -1,0 +1,64 @@
+﻿python : C:\Users\Dang_Thanh\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sklearn\base.py:463: 
+InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeRegressor from version 1.6.1 when using version 
+1.8.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+At line:1 char:1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\Dang_T...lease refer to::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Dang_Thanh\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\sklearn\base.py:463: 
+InconsistentVersionWarning: Trying to unpickle estimator RandomForestRegressor from version 1.6.1 when using version 
+1.8.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+=== XGBoost features (47) ===
+  total_sessions
+  total_page_views
+  avg_bounce_rate
+  avg_session_duration
+  n_traffic_sources
+  src_direct_sessions
+  src_email_campaign_sessions
+  src_organic_search_sessions
+  src_paid_search_sessions
+  src_referral_sessions
+  src_social_media_sessions
+  active_promos_count
+  avg_promo_discount
+  has_stackable_promo
+  total_orders
+  cancelled_orders
+  returned_orders
+  cancellation_rate
+  mobile_ratio
+  total_discount_amount
+  avg_order_value
+  total_returns
+  total_refund
+  year
+  month
+  day
+  dayofweek
+  is_weekend
+  is_month_start
+  is_month_end
+  month_sin
+  month_cos
+  dow_sin
+  dow_cos
+  Revenue_lag_1
+  Revenue_lag_7
+  Revenue_lag_14
+  Revenue_lag_30
+  Revenue_roll_mean_7
+  Revenue_roll_std_7
+  Revenue_roll_mean_14
+  Revenue_roll_std_14
+  Revenue_roll_mean_30
+  Revenue_roll_std_30
+  revenue_momentum_7_30
+  gross_margin_lag_1
+  gross_margin_lag_7
