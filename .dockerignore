@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Data (quá lớn, không cần trong container)
+data/
+*.zip
+
+# Notebooks
+notebook/
+*.ipynb
+
+# Temp
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.env
+*.log
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Output files
+*.png
+*.txt
+model_info.txt
+features_info.txt
+exact_features.txt

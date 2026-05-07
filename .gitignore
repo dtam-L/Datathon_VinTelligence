@@ -1,7 +1,7 @@
-
+# Bỏ qua các file shortcut của Google Drive
 *.gsheet
 *.gdoc
 *.gslides
-*.gdraw
-*.gtable
-__pycache__/
+
+# Bỏ qua dữ liệu thô nếu quá nặng
+data/

@@ -261,7 +261,7 @@ function showResult(data, inputs) {
   const amount = document.getElementById('result-amount');
   animateNumber(amount, 0, data.prediction, 1200);
 
-  // Gauge – R² = 0.9955 → 99.55%
+  // Gauge – mức độ tự tin
   const confidencePct = 99.55;
   setTimeout(() => {
     document.getElementById('gauge-fill').style.width = confidencePct + '%';
