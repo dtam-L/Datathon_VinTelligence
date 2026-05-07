@@ -1,0 +1,365 @@
+\documentclass{article}
+\usepackage[final]{neurips_2025}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[vietnamese]{babel}
+
+\title{Phân tích doanh thu và dự báo doanh thu --- Datathon VinTelligence 2026}
+
+\author{%
+  Đặng Văn Tâm \\
+  Khoa Công nghệ Thông tin \\
+  Hà Nội, Việt Nam \\
+  \texttt{danggtaam@gmail.com} \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Báo cáo trình bày kết quả phân tích toàn diện dữ liệu kinh doanh từ dự án Datathon VinTelligence 2026, gồm bốn trụ cột: (1)~Doanh thu theo thời gian, chiết khấu và biên lợi nhuận; (2)~Khách hàng qua mô hình RFM và kênh acquisition; (3)~Vận hành --- tồn kho, fill rate; (4)~Marketing --- traffic, conversion rate. Kết quả cho thấy doanh thu trải qua giai đoạn tăng trưởng (2012--2016), ổn định (2017--2018) và suy giảm mạnh (2019--2022). Mô hình RFM xác định nhóm Champions (35.418 người) đóng góp 12,386 tỷ VND. Organic Search là kênh hiệu quả nhất với revenue/session 45~VND. Hệ số tương quan stockout--fill rate đạt $-0.99$.
+\end{abstract}
+
+%%=============================================================
+\section{Phân tích Doanh thu}
+\label{sec:revenue}
+
+\subsection{Xu hướng doanh thu và tính thời vụ}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ảnh/Picture1.png}
+  \caption{Tổng doanh thu theo năm (2012--2022) và doanh thu trung bình mỗi ngày theo năm. Đỉnh 2.10B năm 2016, đáy 1.04B năm 2020--2021.}
+  \label{fig:revenue_yearly}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ảnh/Picture2.png}
+  \caption{Phân phối doanh thu trên một ngày (trái) và xu hướng doanh thu theo đường trung bình động 30 ngày (phải). Phân phối lệch phải mạnh, đa số ngày đạt dưới 5 triệu VND. Đường trung bình động cho thấy tính thời vụ rõ ràng với đỉnh lặp lại hàng năm.}
+  \label{fig:revenue_distribution}
+\end{figure}
+
+Dữ liệu cho thấy ba giai đoạn: \textbf{tăng trưởng} (2012--2016, đỉnh 2.10B), \textbf{ổn định} (2017--2018, 1.85--1.91B), và \textbf{suy giảm} (2019--2022, đáy 1.04B). Đặc biệt, ``Regime Change'' 2018$\to$2019 khiến doanh thu trung bình ngày giảm $\sim$40\% (từ 5.1--5.8M xuống 3.1M VND/ngày).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture3.png}
+  \caption{Phân tích tính thời vụ: doanh thu ngày thường vs cuối tuần (trái), doanh thu trung bình theo ngày trong tuần (giữa), và tổng doanh thu theo tháng với miền tin cậy (phải). Doanh thu cao nhất vào Thứ Tư, thấp nhất Thứ Bảy; mùa cao điểm tháng 4--5.}
+  \label{fig:revenue_seasonality}
+\end{figure}
+
+Doanh thu cao nhất vào Thứ Tư, thấp nhất Thứ Bảy; mùa cao điểm tháng 4--5, điểm trũng vào dịp Tết Âm Lịch.
+
+\subsection{Chiết khấu, Premium và biên lợi nhuận}
+
+\begin{table}[H]
+  \caption{Tương quan các chỉ số với doanh thu}
+  \label{tab:corr_revenue}
+  \centering
+  \begin{tabular}{lrl}
+    \toprule
+    Chỉ số & $r$ & Nhận định \\
+    \midrule
+    COGS vs Revenue & $+0.92$ & Tuyến tính cực mạnh \\
+    Premium Qty vs Revenue & $+0.594$ & Dương khá mạnh \\
+    Premium Ratio vs Revenue & $-0.209$ & Âm nhẹ \\
+    Discount Rate vs Revenue & $-0.134$ & Âm nhẹ \\
+    Total Discount vs Revenue & $+0.232$ & Dương yếu \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Nhóm chiết khấu 10--15\% mang lại doanh thu TB cao nhất ($\sim$5 triệu VND); chiết khấu sâu 15--20\% lại cho doanh thu thấp nhất. Ngưỡng đóng góp lý tưởng của sản phẩm Premium là 5--7\%.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture4.png}
+  \caption{Phân tích biên lợi nhuận gộp (Gross Profit Margin): GP Margin theo tháng (trên trái), scatter Revenue vs Gross Profit (trên phải), phân phối GP Margin với Mean 12.5\% và Median 17.8\% (dưới trái), Revenue/COGS/Gross Profit theo tháng (dưới phải). Phần lớn ngày đạt $\sim$20\%, nhưng bị kéo xuống bởi các đợt lỗ sâu đến $-$40\%.}
+  \label{fig:profit_margin}
+\end{figure}
+
+Biên lợi nhuận gộp: Mean 12.5\%, Median 17.8\%. Phần lớn ngày đạt $\sim$20\%, nhưng bị kéo xuống bởi các đợt lỗ sâu đến $-$40\%. Cần kiểm soát COGS chặt chẽ vì tương quan với doanh thu rất mạnh ($r = +0.92$).
+
+%%=============================================================
+\section{Phân tích Khách hàng}
+\label{sec:customer}
+
+\subsection{Phân tích RFM (Recency -- Frequency -- Monetary)}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture3.1.png}
+  \caption{Phân phối các chỉ số RFM: Recency (Mean=2921, Median=1680 ngày), Frequency (Mean=5, Median=2 lần), Monetary (Mean=128.606 VND, Median=44.348 VND). Cảnh báo: 34.1\% khách có signup\_date SAU Last\_Order\_Date.}
+  \label{fig:rfm_distribution}
+\end{figure}
+
+\begin{table}[H]
+  \caption{Thống kê RFM}
+  \label{tab:rfm_stats}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Chỉ số & Mean & Median & Nhận định \\
+    \midrule
+    Recency (ngày) & 2{,}921 & 1{,}680 & Cutoff bất thường $\sim$7500 ngày \\
+    Frequency (lần) & 5 & 2 & Đa số chỉ mua 1--2 lần \\
+    Monetary (VND) & 128{,}606 & 44{,}348 & Long-tail distribution \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Phân khúc khách hàng}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture3.3.png}
+  \caption{Phân khúc RFM: Số khách theo phân khúc (trái), tổng Monetary theo phân khúc (giữa), và bubble chart Recency vs Frequency với kích thước = Monetary (phải). Champions (góc trên bên trái) phân hóa rõ với các nhóm Lost/Others (phía bên phải).}
+  \label{fig:rfm_segments}
+\end{figure}
+
+\begin{table}[H]
+  \caption{Tổng hợp phân khúc khách hàng theo mô hình RFM}
+  \label{tab:rfm}
+  \centering
+  \begin{tabular}{lrrrr}
+    \toprule
+    Phân khúc & Số lượng & Doanh thu & Freq TB & Recency TB \\
+    \midrule
+    Champions & 35.418 & 12,386 tỷ & 14 lần & 398 ngày \\
+    Loyal & 25.460 & 2,456 tỷ & 4 lần & --- \\
+    Potential Loyalist & 8.252 & 215 triệu & 1 lần & --- \\
+    Big Spenders & 255 & 23 triệu & --- & 3.027 ngày \\
+    At Risk & 8.252 & 372 triệu & 2 lần & 2.834 ngày \\
+    Lost & 17.088 & $\sim$0 & 0 & --- \\
+    Others & $>$27.000 & 229 triệu & --- & 5.260 ngày \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Nhóm Champions là ``xương sống'' (chiếm đa số doanh thu). Cảnh báo: 34.1\% khách hàng có \texttt{signup\_date} sau \texttt{Last\_Order\_Date} --- lỗi dữ liệu nghiêm trọng cần xử lý.
+
+\subsection{Phân tích theo kênh Acquisition}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture3.4.png}
+  \caption{Hiệu quả kênh Marketing: Monetary TB theo kênh (trên trái), Frequency TB theo kênh (trên phải), cơ cấu độ tuổi theo kênh (dưới trái), scatter Frequency vs Monetary theo kênh (dưới phải). Các kênh cực kỳ đồng đều với Monetary TB 127--129K VND.}
+  \label{fig:channel_analysis}
+\end{figure}
+
+Hiệu quả các kênh \textbf{cực kỳ đồng đều}: Monetary TB 127--129K VND, Frequency TB $\sim$5.3 lần, tỷ lệ Champions 28.7--29.5\% ở mọi kênh. Organic Search dẫn đầu về quy mô (36.450 khách). Kết luận: chất lượng khách hàng không phụ thuộc kênh acquisition mà bị chi phối bởi trải nghiệm sản phẩm sau mua.
+
+%%=============================================================
+\section{Vận hành \& Marketing}
+\label{sec:ops_mkt}
+
+\subsection{Tồn kho và Fill Rate}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ảnh/Picture2.1.png}
+  \caption{Mối quan hệ giữa số ngày hết hàng (Stockout Days) và Fill Rate. Tương quan nghịch biến hoàn hảo ($r = -0.99$): khi số ngày hết hàng tăng trên 5 ngày, Fill Rate giảm mạnh xuống dưới 75\%.}
+  \label{fig:stockout_fillrate}
+\end{figure}
+
+\begin{table}[H]
+  \caption{Tương quan vận hành và chỉ số marketing chính}
+  \label{tab:ops_mkt}
+  \centering
+  \begin{tabular}{lrl}
+    \toprule
+    Cặp biến & $r$ & Nhận định \\
+    \midrule
+    \multicolumn{3}{l}{\textit{Vận hành}} \\
+    stockout\_days -- fill\_rate & $-0.99$ & Nghịch biến hoàn hảo \\
+    stock\_on\_hand -- fill\_rate & $+0.14$ & Rất yếu \\
+    \midrule
+    \multicolumn{3}{l}{\textit{Marketing}} \\
+    Sessions -- Unique Visitors & $+0.99$ & Gần tuyệt đối \\
+    Orders -- Revenue Net & $+0.91$ & Rất chặt chẽ \\
+    Orders -- Conversion Rate & $+0.83$ & CR then chốt \\
+    Sessions -- CR & $-0.28$ & Traffic ``loãng'' \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Với $r = -0.99$ giữa stockout và fill rate, mục tiêu vận hành số~1 là giữ thời gian hết hàng dưới 3~ngày (Fill Rate $>$90\%). Tồn kho trung bình cao không đảm bảo fill rate tốt --- cần tối ưu \textit{danh mục} thay vì tích trữ số lượng.
+
+\subsection{Phễu chuyển đổi Traffic}
+
+\begin{table}[H]
+  \caption{Hiệu quả các kênh traffic}
+  \label{tab:traffic}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Nguồn & CR & Tổng đơn & Rev/Session \\
+    \midrule
+    Organic Search & 0.0021 & 50.534 & 45 VND \\
+    Paid Search & 0.0016 & 29.203 & 36 VND \\
+    Social Media & 0.0015 & 21.999 & 34 VND \\
+    Email Campaign & 0.0009 & --- & 19 VND \\
+    Direct & 0.0006 & 3.518 & 13 VND \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Organic Search} dẫn đầu tuyệt đối ở mọi chỉ số: CR cao nhất, tổng đơn lớn nhất, revenue/session cao nhất (45~VND). Email Campaign có nghịch lý ``tương tác cao -- giá trị thấp'': thời gian phiên và page views rất cao nhưng CR chỉ 0.0009.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ảnh/Picture2.6.png}
+  \caption{Heatmap chất lượng Traffic (giá trị gốc, màu chuẩn hóa): Bounce Rate đồng đều 0.0045 ở mọi kênh, Email Campaign có Avg Duration cao nhất (213.2s) và Page Views cao nhất (109.856), nhưng CR lại thấp nhất.}
+  \label{fig:traffic_heatmap}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{ảnh/Picture2.2.png}
+  \caption{Scatter plot High Intent: Thời gian phiên (Avg Session Duration) vs Lượt xem trang (Page Views) theo nguồn traffic. Organic Search (xanh dương) chiếm ưu thế về mật độ ở vùng high-intent.}
+  \label{fig:high_intent}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ảnh/Picture2.3.png}
+  \caption{Tỷ lệ quay lại (Sessions / Unique Visitors) theo nguồn traffic. Tỷ lệ đồng đều (1.316--1.322) cho thấy hành vi quay lại bị chi phối bởi trải nghiệm on-site hơn là nguồn gốc traffic.}
+  \label{fig:return_ratio}
+\end{figure}
+
+\subsection{Phân tích thời gian --- Traffic và Doanh thu}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture2.4.png}
+  \caption{Sessions, Conversion Rate, và Revenue trung bình theo ngày trong tuần, phân theo nguồn traffic. Doanh thu đỉnh vào Thứ~Tư; Chủ~Nhật có Organic CR cao nhất.}
+  \label{fig:traffic_weekday}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{ảnh/Picture2.5.png}
+  \caption{Chuỗi thời gian theo tháng: Sessions (trên trái), Revenue (trên phải), Conversion Rate (dưới trái), và Orders (dưới phải) phân theo nguồn traffic. Organic Search duy trì vị thế dẫn đầu xuyên suốt các giai đoạn.}
+  \label{fig:traffic_monthly}
+\end{figure}
+
+Doanh thu đỉnh vào Thứ~Tư; Chủ~Nhật có Organic CR cao nhất. Organic Search duy trì vị thế dẫn đầu xuyên suốt các giai đoạn thời gian, khẳng định tầm quan trọng của chiến lược SEO dài hạn.
+
+%%=============================================================
+\section{Mô hình Dự báo Doanh thu (Revenue Forecasting)}
+\label{sec:forecasting}
+
+\subsection{Tổng quan dự án}
+
+Dự án xây dựng mô hình dự báo doanh thu (Revenue) và giá vốn hàng bán (COGS) theo ngày, sử dụng dữ liệu lịch sử từ 04/07/2012 đến 31/12/2022. Mục tiêu là dự đoán Revenue và COGS cho giai đoạn 01/01/2023 đến 01/07/2024 (548 ngày).
+
+\textbf{Mục tiêu cụ thể:} Dự đoán giá trị Revenue và COGS theo ngày cho giai đoạn tương lai; xây dựng pipeline xử lý dữ liệu chuyên nghiệp, chống data leakage; so sánh hiệu suất giữa XGBoost và Random Forest Regressor; xác định các features quan trọng nhất ảnh hưởng đến doanh thu.
+
+\subsection{Dữ liệu đầu vào}
+
+Pipeline sử dụng 6 nguồn dữ liệu từ cuộc thi Datathon 2026 Round~1:
+
+\begin{table}[H]
+  \caption{Tổng hợp các nguồn dữ liệu đầu vào}
+  \label{tab:data_sources}
+  \centering
+  \begin{tabular}{lrcl}
+    \toprule
+    Dataset & Số dòng & Số cột & Mô tả \\
+    \midrule
+    Sales & 3{,}833 & 3 & Dữ liệu doanh thu và COGS theo ngày \\
+    Web Traffic & 3{,}652 & 7 & Lượng truy cập website theo nguồn \\
+    Promotions & 50 & 10 & Chương trình khuyến mại \\
+    Orders & 646{,}945 & 8 & Đơn hàng với trạng thái và thiết bị \\
+    Order Items & 714{,}669 & 7 & Chi tiết sản phẩm trong đơn hàng \\
+    Returns & 39{,}939 & 7 & Đơn hàng bị trả lại và hoàn tiền \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Quy trình xử lý dữ liệu}
+
+Các nguồn dữ liệu được tổng hợp theo ngày bằng phương pháp \textit{left join}. Dữ liệu Sales là bảng chính, các bảng phụ được aggregate trước khi merge. Xử lý missing values: Web traffic dùng median cho bounce\_rate và session\_duration, còn lại fill~$= 0$; Orders/Returns fill~$= 0$ cho ngày không có đơn hàng. Outlier được phát hiện bằng phương pháp IQR cho Revenue, COGS, và Gross\_Margin.
+
+\textbf{Feature Engineering:} Tổng cộng 66 cột sau xử lý (bao gồm 2 target), bao gồm: Calendar Features với Sin/Cos encoding để biểu diễn tính chu kỳ; Lag features (shift 1, 7, 14, 30 ngày --- \textit{leakage-safe}); Rolling features (mean và std với window 7, 14, 30 ngày); Momentum (tỷ lệ rolling\_mean\_7 / rolling\_mean\_30). \textbf{Quan trọng:} Tất cả lag features đều sử dụng \texttt{shift()} để đảm bảo không rò rỉ dữ liệu tương lai. 30 ngày đầu bị drop do không có đủ lịch sử lag $\to$ từ 3{,}833 còn 3{,}803 dòng. Các features có tương quan $> 0.95$ bị loại bỏ để giảm đa cộng tuyến.
+
+\subsection{Mô hình dự báo}
+
+Hai mô hình được train riêng biệt cho Revenue và COGS:
+
+\begin{table}[H]
+  \caption{Cấu hình hyperparameters của hai mô hình}
+  \label{tab:hyperparams}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    Thông số & XGBoost & Random Forest \\
+    \midrule
+    n\_estimators & 500 & 500 \\
+    max\_depth & 6 & 15 \\
+    learning\_rate & 0.05 & --- \\
+    subsample / colsample\_bytree & 0.8 / 0.8 & --- \\
+    min\_samples\_split / leaf & --- & 5 / 2 \\
+    random\_state & 42 & 42 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Cross-Validation:} Sử dụng \texttt{TimeSeriesSplit(n\_splits=5)} thay vì KFold thông thường, đảm bảo mỗi fold chỉ train trên dữ liệu quá khứ và test trên dữ liệu tương lai, phản ánh đúng cách mô hình sẽ được sử dụng trong thực tế. \textbf{Metrics đánh giá:} $R^2 = 1 - \frac{SS_{res}}{SS_{tot}}$ (giá trị 1.0 là hoàn hảo) và $\text{RMSE} = \sqrt{\text{mean}((y_{true} - y_{pred})^2)}$ (đơn vị VND, càng thấp càng tốt).
+
+\subsection{Phân tích Feature Importance}
+
+Sau khi train, sử dụng \texttt{feature\_importances\_} từ cả 2 mô hình để xác định features quan trọng nhất. Top 15 features có tương quan cao nhất với Revenue được xác định bằng hệ số Pearson. Các features lag và rolling thường có tương quan cao nhất do tính tự tương quan của chuỗi thời gian. Biểu đồ Feature Importance được tạo cho 4 trường hợp: XGBoost-Revenue, XGBoost-COGS, RandomForest-Revenue, RandomForest-COGS.
+
+\subsection{Tổng kết kỹ thuật}
+
+\begin{table}[H]
+  \caption{Tổng kết các thông số kỹ thuật của pipeline dự báo}
+  \label{tab:tech_summary}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    Thông số & Giá trị \\
+    \midrule
+    Dữ liệu gốc & 3{,}833 ngày (04/07/2012 -- 31/12/2022) \\
+    Dữ liệu sau xử lý & 3{,}803 ngày (drop 30 ngày đầu cho lag) \\
+    Số nguồn dữ liệu & 6 (Sales, Web Traffic, Promotions, Orders, Order Items, Returns) \\
+    Tổng số features & 66 cột (bao gồm 2 target) \\
+    Mô hình & XGBoost (depth=6, lr=0.05) và Random Forest (depth=15) \\
+    Validation & TimeSeriesSplit (5 folds) \\
+    Chống leakage & shift() only, không dùng ffill/bfill trên lag \\
+    Thời gian dự đoán & 548 ngày (01/01/2023 -- 01/07/2024) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+%%=============================================================
+\section{Kết luận}
+
+\textbf{Doanh thu:} Điều tra Regime Change 2018--2019; tối ưu biên lợi nhuận bằng cách giảm COGS và giữ chiết khấu ở mức 10--15\%.
+
+\textbf{Khách hàng:} Giữ chân Champions (35K); chuyển đổi Potential Loyalist (8.2K); phục hồi At Risk (8.2K).
+
+\textbf{Vận hành:} Rút ngắn thời gian hết hàng $<$3 ngày; tối ưu danh mục tồn kho thay vì tích trữ.
+
+\textbf{Marketing:} Đầu tư mạnh SEO (Organic Search); tối ưu Email Campaign để tăng conversion; tập trung khuyến mãi vào Thứ~Tư.
+
+\section*{References}
+{\small
+[1] Datathon VinTelligence 2026 --- Bộ dữ liệu Vòng 1.
+
+[2] Hughes, A.M. (1994). \textit{Strategic Database Marketing}. McGraw-Hill.
+}
+
+\end{document}
