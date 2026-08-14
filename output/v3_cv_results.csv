@@ -1,0 +1,7 @@
+profile_id,col,cv_mae,cps,seasonality_mode,yearly_fourier,lgb_objective,n_estimators,train_start_year,dynamic_blend,decay_strength
+1,Revenue,722856.9827102959,0.05,multiplicative,20,mae,1200,,True,0.5
+1,COGS,637762.7163679688,0.05,multiplicative,20,mae,1200,,True,0.5
+2,Revenue,732790.0312477459,0.03,multiplicative,20,mae,1200,,True,0.5
+2,COGS,650825.2701900058,0.03,multiplicative,20,mae,1200,,True,0.5
+3,Revenue,725173.6394353448,0.1,multiplicative,20,mae,1200,,True,0.5
+3,COGS,643922.7484893968,0.1,multiplicative,20,mae,1200,,True,0.5
